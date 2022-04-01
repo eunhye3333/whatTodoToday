@@ -17,6 +17,7 @@ public class MemberController {
         model.addAttribute("memberForm", new MemberForm());
         return "member/createMemberForm";
     }
+    
 
     // @AuthenticationPrincipal User userInfo : 파라미터로 사용하여 멤버 정보 바로 가져오기 (세션을 통하지 않아도 됨)
 
