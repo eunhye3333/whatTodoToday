@@ -28,7 +28,7 @@ public class LoginIdPwValidator implements UserDetailsService {
         Member member = memberRepository.findByUsername(insertId);
 
         if(member == null){
-            return null; // throw로 에러를 날리는 게 나을듯
+            return null; // throw로 에러를 날리기
         }
 
         return User.builder()

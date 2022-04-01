@@ -38,7 +38,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        // css, js 등 인증이 되지 않아도 확인할 수 있어야 하는 경로들이 존재하는데 이 부분들은 다음과 같이 예외처리한다
+        // css, js 등 인증이 되지 않아도 확인할 수 있어야 하는 경로들이 존재하는데 이 부분들은 다음과 같이 예외처리
         web.ignoring().antMatchers("/static/js/**","/static/css/**","/static/images/**","/static/fonts/**","/static/vendor/**");
     }
 
