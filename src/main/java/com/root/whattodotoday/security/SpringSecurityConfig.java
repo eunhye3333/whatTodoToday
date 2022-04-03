@@ -27,10 +27,10 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
                 .formLogin() // 폼 방식 로그인을 사용하겠다
                 .loginPage("/member/login") // 커스텀 페이지로 로그인 페이지를 변경
-                .loginProcessingUrl("/loginProc") // form 태그의 action 주소 (로그인을 시도하면 넘겨받을 주소 지정 -> 자동으로 스프링 시큐리티쪽으로 id와 pw를 보냄)
+                .loginProcessingUrl("/member/loginProc") // form 태그의 action 주소 (로그인을 시도하면 넘겨받을 주소 지정 -> 자동으로 스프링 시큐리티쪽으로 id와 pw를 보냄)
                 .usernameParameter("id") // 유저 아이디에 해당하는 form 내부 input의 name (생략 가능)
                 .passwordParameter("pw") // 유저 비밀번호에 해당하는 form 내부 input의 name (생략 가능)
-                .defaultSuccessUrl("/", true) // 로그인 성공 시 이동할 url 작성
+                .defaultSuccessUrl("/todo/main", true) // 로그인 성공 시 이동할 url 작성
                 .permitAll()
             .and()
                 .logout()
