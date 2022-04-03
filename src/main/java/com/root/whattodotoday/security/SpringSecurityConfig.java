@@ -1,6 +1,7 @@
 package com.root.whattodotoday.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,7 +20,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/chk").permitAll()    // 로그인 없이 접근 가능해야 하는 URI
+                .antMatchers("/member/login").permitAll()    // 로그인 없이 접근 가능해야 하는 URI
 //                .antMatchers("/manage").hasAuthority("ROLE_ADMIN") // 해당 사용자의 권한이 admin인 경우 /manage 이하의 uri에 접근 가능
                 .anyRequest().authenticated() // 어떤 URI로 접근하든 인증된 사용자만 접근 가능
                 // anyRequest() 대신 .antMatchers("url")을 사용하면 로그인이 필요한 uri 지정 가능
@@ -39,7 +40,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         // css, js 등 인증이 되지 않아도 확인할 수 있어야 하는 경로들이 존재하는데 이 부분들은 다음과 같이 예외처리
-        web.ignoring().antMatchers("/static/js/**","/static/css/**","/static/images/**","/static/fonts/**","/static/vendor/**");
+        web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 
     @Override

@@ -14,7 +14,7 @@ public class Todo {
     @Id
     @GeneratedValue
     @Column(name = "todo_no")
-    private int todoNo;
+    private Long todoNo;
 
     private String todoContent;
     private LocalDateTime todoDate;

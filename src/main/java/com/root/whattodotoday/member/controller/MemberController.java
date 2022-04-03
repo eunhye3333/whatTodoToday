@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequiredArgsConstructor
@@ -13,9 +14,14 @@ public class MemberController {
 
     // 회원가입 창으로 전환
     @GetMapping("/member/new")
-    public String createForm(Model model){
+    public String signup(Model model){
         model.addAttribute("memberForm", new MemberForm());
         return "member/createMemberForm";
+    }
+
+    @GetMapping("/member/login")
+    public String login(){
+        return "/member/login";
     }
     
 
