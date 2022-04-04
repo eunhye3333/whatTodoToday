@@ -15,4 +15,8 @@ public class MemberRepository {
     public Member findByUsername(String insertId) {
         return em.find(Member.class, insertId);
     }
+
+    public void save(Member member) {
+        em.persist(member);
+    }
 }
