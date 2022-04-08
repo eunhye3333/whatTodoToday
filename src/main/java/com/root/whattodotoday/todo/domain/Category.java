@@ -23,4 +23,8 @@ public class Category {
     private Long categoryNo;
 
     private String categoryTitle;
+
+    public Category(String categoryTitle){
+        this.categoryTitle = categoryTitle;
+    }
 }
