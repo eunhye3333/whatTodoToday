@@ -1,8 +1,10 @@
 package com.root.whattodotoday.member.domain;
 
+import com.root.whattodotoday.todo.domain.Category;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -27,8 +29,15 @@ public class Member {
     private String nickname;
     private String email;
 
+    @Column(length = 1, columnDefinition = "varchar(1) default 'Y'")
     @Enumerated(EnumType.STRING)
-    private MemberStatus status;
+    private MemberStatus status = MemberStatus.Y;
 
+    public void initMember(String id, String pw, String nickname, String email){
+        this.id = id;
+        this.pw = pw;
+        this.nickname = nickname;
+        this.email = email;
+    }
 
 }
