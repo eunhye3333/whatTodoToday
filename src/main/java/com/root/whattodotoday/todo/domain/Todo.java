@@ -38,9 +38,9 @@ public class Todo {
     @JoinColumn(name = "category_no")
     private Category category;
 
-    public void initTodo(String todoContent, LocalDateTime todoDate, Member member, Category category){
+    public void initTodo(String todoContent, Member member, Category category){
         this.todoContent = todoContent;
-        this.todoDate = todoDate;
+        this.todoDate = LocalDateTime.now();
         this.member = member;
         this.category = category;
     }

@@ -1,6 +1,5 @@
 package com.root.whattodotoday.todo.controller;
 
-import com.root.whattodotoday.member.controller.MemberForm;
 import com.root.whattodotoday.member.domain.Member;
 import com.root.whattodotoday.todo.domain.Category;
 import com.root.whattodotoday.todo.domain.Todo;
@@ -11,26 +10,33 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.servlet.http.HttpSession;
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 public class TodoController {
 
     private final TodoService todoService;
 
-    @GetMapping("/todo/new")
-    public String doTodo(){
-        return "todo/createTodoForm";
+    @GetMapping("/todo/list")
+    public String todoListView(Model model){
+        List<Todo> todos = todoService.findTodo();
+        model.addAttribute("todos", todos);
+
+        return "/todo/todoList";
     }
 
     @PostMapping("/todo/new")
-    public String create(TodoForm form){
+    public String create(TodoForm form, HttpSession session){
         Todo todo = new Todo();
         Category category = new Category(form.getCategoryTitle());
-        Member member = new Member(); // 현재 접속한 멤버 가지고 오기
+        Member member = (Member)session.getAttribute("member");
 
-        todo.initTodo(form.getTodoContent(), form.getTodoDate(), member, category);
+        todo.initTodo(form.getTodoContent(), member, category);
 
         todoService.saveTodo(todo);
-        return "redirect:/todo/createTodoForm";
+        return "redirect:/todo/todoList";
     }
+
 }
