@@ -19,14 +19,5 @@ public class TodoServiceTest {
     @Autowired TodoService todoService;
     @Autowired TodoRepository todoRepository;
 
-    @Test
-    public void write() throws Exception{
-        Member member1 = new Member();
-        Category category1 = new Category("공부");
-        Todo todo = new Todo();
-        todo.initTodo("스프링 공부", member1, category1);
-
-        todoService.saveTodo(todo);
-    }
 
 }

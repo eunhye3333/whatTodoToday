@@ -1,10 +1,13 @@
 package com.root.whattodotoday.member.domain;
 
 import com.root.whattodotoday.todo.domain.Category;
+import com.root.whattodotoday.todo.domain.Todo;
 import lombok.Getter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -32,6 +35,9 @@ public class Member {
     @Column(length = 1, columnDefinition = "varchar(1) default 'Y'")
     @Enumerated(EnumType.STRING)
     private MemberStatus status = MemberStatus.Y;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Category> categories = new ArrayList<>();
 
     public void initMember(String id, String pw, String nickname, String email){
         this.id = id;

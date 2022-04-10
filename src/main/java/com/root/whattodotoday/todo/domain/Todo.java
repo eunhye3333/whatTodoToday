@@ -30,18 +30,12 @@ public class Todo {
     @Enumerated(EnumType.STRING)
     private TodoStatus status;
 
-    @ManyToOne(targetEntity = Member.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_no")
-    private Member member;
-
     @ManyToOne(targetEntity = Category.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "category_no")
     private Category category;
 
-    public void initTodo(String todoContent, Member member, Category category){
+    public void initTodo(String todoContent){
         this.todoContent = todoContent;
         this.todoDate = LocalDateTime.now();
-        this.member = member;
-        this.category = category;
     }
 }

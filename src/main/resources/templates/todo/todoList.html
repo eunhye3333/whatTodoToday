@@ -90,25 +90,63 @@
                 <span th:text="${todo.todoContent}"></span>
             </div>
             <div class="add-control">
-                <div class="form-group has-feedback">
-                    <input type="text" class="form-control" placeholder="✍️ Add item..."/>
-                    <i class="fa fa-plus form-control-feedback add-btn" title="Add item"></i>
+                <div class="form-group has-feedback category">
+                    <input type="text" id="category-content" class="form-control" placeholder="🗃️ Add category..."/>
+                    <i class="fa fa-plus form-control-feedback add-category" title="Add category"></i>
+                </div>
+                <div class="form-group has-feedback todo hidden">
+                    <input type="text" id="todo-content" class="form-control" placeholder="✍️ Add item..."/>
+                    <i class="fa fa-plus form-control-feedback add-todo" title="Add item"></i>
                 </div>
             </div>
-            <p class="err text-danger text-center hidden"><i class="fa fa-warning"></i> Oops! Please, enter name item</p>
+            <p class="err text-danger text-center hidden"><i class="fa fa-warning"></i> </p>
             <p class="no-items text-muted text-center hidden"><i class="fa fa-ban"></i></p>
-            <ul class="todo-list">
+            <ul class="category-list">
             </ul>
         </div>
     </div>
 </div>
 
 <script>
-    $(".add-btn").on("click", function() {
-        let todoContent = $(".form-control").val();
+    $(".add-category").on("click", function (){
+        let categoryContent = $("#category-content").val();
+
+        if (categoryContent === "") {
+            $(".err")
+                .text("category 내용을 입력해주세요")
+                .removeClass("hidden")
+                .addClass("animated bounceIn");
+        } else {
+            $(".err").addClass("hidden");
+            $(".no-items").addClass("hidden");
+
+            $.ajax({
+                url: "/category/new",
+                type: "POST",
+                data: "categoryContent=" + categoryContent,
+                success: function (data) {
+                    let item =
+                        '<li class="animated flipInX"><div class="checkbox"><span class="close"><i class="fa fa-times"></i></span><label><span class="checkbox-mask"></span>' +
+                        categoryContent +
+                        '<ul class="todo-list"></ul></label></div></li>';
+
+                    $(".category-list").append(item);
+                },
+                error: function (request, status, error) {
+                    let msg = "ERROR : " + request.status + "<br>";
+                    msg += "내용 : " + request.responseText + "<br>" + error;
+                    console.log(msg);
+                }
+            });
+        }
+    });
+
+    $(".add-todo").on("click", function() {
+        let todoContent = $("#todo-content").val();
 
         if (todoContent === "") {
             $(".err")
+                .text("todo 내용을 입력해주세요")
                 .removeClass("hidden")
                 .addClass("animated bounceIn");
         } else {
@@ -135,11 +173,42 @@
             });
         }
 
-
-
         $(".form-control").focus();
     });
 
+    $(".todo-list").on("click", 'input[type="checkbox"]', function() {
+        let li = $(this).parents('li');
+        li.toggleClass("danger");
+        li.toggleClass("animated flipInX");
+
+        setToDone(li.data().id);
+
+        setTimeout(function() {
+            li.removeClass("animated flipInX");
+        }, 500);
+    });
+
+    $(".todo-list").on("click", ".close", function() {
+        let box = $(this)
+            .parent()
+            .parent();
+
+        if ($(".todo-list li").length == 1) {
+            box.removeClass("animated flipInX").addClass("animated                bounceOutLeft");
+            setTimeout(function() {
+                box.remove();
+                $(".no-items").removeClass("hidden");
+                $(".refresh").addClass("hidden");
+            }, 500);
+        } else {
+            box.removeClass("animated flipInX").addClass("animated bounceOutLeft");
+            setTimeout(function() {
+                box.remove();
+            }, 500);
+        }
+
+        deleteTodo(box.data().id)
+    });
 </script>
 </body>
 </html>

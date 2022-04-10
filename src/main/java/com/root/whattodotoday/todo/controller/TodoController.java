@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -27,13 +28,22 @@ public class TodoController {
         return "/todo/todoList";
     }
 
-    @PostMapping("/todo/new")
-    public String create(TodoForm form, HttpSession session){
-        Todo todo = new Todo();
-        Category category = new Category(form.getCategoryTitle());
+    @PostMapping("/category/new")
+    public String createCategory(@RequestParam("categoryContent") String categoryContent, HttpSession session){
+        Category category = new Category();
+        category.initCategory(categoryContent);
+
         Member member = (Member)session.getAttribute("member");
 
-        todo.initTodo(form.getTodoContent(), member, category);
+        return "redirect:/todo/todoList";
+    }
+
+    @PostMapping("/todo/new")
+    public String createTodo(@RequestParam("todoContent") String todoContent, HttpSession session){
+        Todo todo = new Todo();
+        Member member = (Member)session.getAttribute("member");
+
+        todo.initTodo(todoContent);
 
         todoService.saveTodo(todo);
         return "redirect:/todo/todoList";
