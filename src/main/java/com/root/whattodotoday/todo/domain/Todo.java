@@ -8,19 +8,10 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@SequenceGenerator(
-        name = "TODO_SEQ_GEN",
-        sequenceName = "SEQ_TODO",
-        initialValue = 1,
-        allocationSize = 1
-)
 public class Todo {
 
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "SEQ_TODO"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // 기본 키 생성을 데이터베이스에 위임 -> id 값이 null이면 알아서 AUTO_INCREMENT 해줌
     @Column(name = "todo_no")
     private Long todoNo;
 
@@ -37,5 +28,6 @@ public class Todo {
     public void initTodo(String todoContent){
         this.todoContent = todoContent;
         this.todoDate = LocalDateTime.now();
+        this.status = TodoStatus.YET;
     }
 }

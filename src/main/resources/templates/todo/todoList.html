@@ -86,29 +86,42 @@
     <div class="today"></div>
     <div class="row">
         <div class="col-md-4 col-md-offset-4 col-xs-6 col-xs-offset-3">
-            <div th:each="todo : ${todos}">
-                <span th:text="${todo.todoContent}"></span>
-            </div>
             <div class="add-control">
                 <div class="form-group has-feedback category">
                     <input type="text" id="category-content" class="form-control" placeholder="🗃️ Add category..."/>
                     <i class="fa fa-plus form-control-feedback add-category" title="Add category"></i>
                 </div>
-                <div class="form-group has-feedback todo hidden">
-                    <input type="text" id="todo-content" class="form-control" placeholder="✍️ Add item..."/>
-                    <i class="fa fa-plus form-control-feedback add-todo" title="Add item"></i>
-                </div>
             </div>
-            <p class="err text-danger text-center hidden"><i class="fa fa-warning"></i> </p>
-            <p class="no-items text-muted text-center hidden"><i class="fa fa-ban"></i></p>
-            <ul class="category-list">
-            </ul>
+            <div th:each="category : ${categories}">
+                <span class="category-list" th:text="${category.categoryTitle}"></span>
+                <div class="add-control">
+                    <div class="form-group has-feedback todo">
+                        <input type="text" id="todo-content" class="form-control" placeholder="✍️ Add item..."/>
+                        <i class="fa fa-plus form-control-feedback add-todo" title="Add item"></i>
+                    </div>
+                </div>
+                <p class="err text-danger text-center hidden"><i class="fa fa-warning"></i> </p>
+                <p class="no-items text-muted text-center hidden"><i class="fa fa-ban"></i></p>
+                <ul th:each="todo : ${category.todos}">
+                    <li class="animated flipInX" th:text="${todo.todoContent}">
+                        <div class="checkbox">
+                            <span class="close">
+                                <i class="fa fa-times"></i>
+                            </span>
+                            <label>
+                                <span class="checkbox-mask"></span>
+                                <input type="checkbox" />
+                            </label>
+                        </div>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-    $(".add-category").on("click", function (){
+    function createCategory (){
         let categoryContent = $("#category-content").val();
 
         if (categoryContent === "") {
@@ -139,7 +152,7 @@
                 }
             });
         }
-    });
+    }
 
     $(".add-todo").on("click", function() {
         let todoContent = $("#todo-content").val();

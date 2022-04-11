@@ -17,12 +17,22 @@ public class TodoService {
     private final TodoRepository todoRepository;
 
     @Transactional
-    public void saveTodo(Todo todo) {
-        todoRepository.save(todo);
+    public Long saveCategory(Category category) {
+        return todoRepository.save(category);
     }
 
+    @Transactional
+    public Long saveTodo(Todo todo) {
+        return todoRepository.save(todo);
+    }
+
+    public List<Category> findCategory() {
+        return todoRepository.findAllCategory();
+    }
 
     public List<Todo> findTodo() {
-        return todoRepository.findAll();
+        return todoRepository.findAllTodo();
     }
+
+
 }

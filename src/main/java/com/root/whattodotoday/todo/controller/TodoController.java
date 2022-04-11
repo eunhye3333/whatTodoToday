@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -22,24 +23,39 @@ public class TodoController {
 
     @GetMapping("/todo/list")
     public String todoListView(Model model){
-        List<Todo> todos = todoService.findTodo();
-        model.addAttribute("todos", todos);
+        List<Category> categories = todoService.findCategory();
+        model.addAttribute("categories", categories);
 
         return "/todo/todoList";
     }
 
     @PostMapping("/category/new")
+    @ResponseBody
     public String createCategory(@RequestParam("categoryContent") String categoryContent, HttpSession session){
         Category category = new Category();
         category.initCategory(categoryContent);
 
         Member member = (Member)session.getAttribute("member");
 
-        return "redirect:/todo/todoList";
+        Long categoryNo = todoService.saveCategory(category);
+        return categoryNo.toString();
     }
 
     @PostMapping("/todo/new")
+    @ResponseBody
     public String createTodo(@RequestParam("todoContent") String todoContent, HttpSession session){
+        Todo todo = new Todo();
+        Member member = (Member)session.getAttribute("member");
+
+        todo.initTodo(todoContent);
+
+        Long todoNo = todoService.saveTodo(todo);
+        return todoNo.toString();
+    }
+
+    @PostMapping("/todo/update")
+    @ResponseBody
+    public String updateTodo(@RequestParam("todoContent") String todoContent, HttpSession session){
         Todo todo = new Todo();
         Member member = (Member)session.getAttribute("member");
 

@@ -10,19 +10,10 @@ import java.util.List;
 
 @Entity
 @Getter
-@SequenceGenerator(
-        name = "CATE_SEQ_GEN",
-        sequenceName = "SEQ_CATE",
-        initialValue = 1,
-        allocationSize = 1
-)
 public class Category {
 
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "CATE_SEQ_GEN"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "category_no")
     private Long categoryNo;
 
