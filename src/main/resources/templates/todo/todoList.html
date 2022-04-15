@@ -92,36 +92,38 @@
                     <i class="fa fa-plus form-control-feedback add-category" title="Add category"></i>
                 </div>
             </div>
-            <div th:each="category : ${categories}">
-                <span class="category-list" th:text="${category.categoryTitle}"></span>
-                <div class="add-control">
-                    <div class="form-group has-feedback todo">
-                        <input type="text" id="todo-content" class="form-control" placeholder="✍️ Add item..."/>
-                        <i class="fa fa-plus form-control-feedback add-todo" title="Add item"></i>
-                    </div>
-                </div>
-                <p class="err text-danger text-center hidden"><i class="fa fa-warning"></i> </p>
-                <p class="no-items text-muted text-center hidden"><i class="fa fa-ban"></i></p>
-                <ul th:each="todo : ${category.todos}">
-                    <li class="animated flipInX" th:text="${todo.todoContent}">
-                        <div class="checkbox">
-                            <span class="close">
-                                <i class="fa fa-times"></i>
-                            </span>
-                            <label>
-                                <span class="checkbox-mask"></span>
-                                <input type="checkbox" />
-                            </label>
+            <p class="err text-danger text-center hidden"><i class="fa fa-warning"></i> </p>
+            <p class="no-items text-muted text-center hidden"><i class="fa fa-ban"></i></p>
+            <div class="contents">
+                <div th:each="category : ${categories}">
+                    <span class="category-list" th:text="${category.categoryTitle}"></span>
+                    <div class="add-control">
+                        <div class="form-group has-feedback todo">
+                            <input type="text" id="todo-content" class="form-control" placeholder="✍️ Add item..."/>
+                            <i class="fa fa-plus form-control-feedback add-todo" title="Add item"></i>
                         </div>
-                    </li>
-                </ul>
+                    </div>
+                    <ul th:each="todo : ${category.todos}">
+                        <li class="animated flipInX" th:text="${todo.todoContent}">
+                            <div class="checkbox">
+                                <span class="close">
+                                    <i class="fa fa-times"></i>
+                                </span>
+                                <label>
+                                    <span class="checkbox-mask"></span>
+                                    <input type="checkbox" />
+                                </label>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    function createCategory (){
+    $(".add-category").on("click", function (){
         let categoryContent = $("#category-content").val();
 
         if (categoryContent === "") {
@@ -139,11 +141,15 @@
                 data: "categoryContent=" + categoryContent,
                 success: function (data) {
                     let item =
-                        '<li class="animated flipInX"><div class="checkbox"><span class="close"><i class="fa fa-times"></i></span><label><span class="checkbox-mask"></span>' +
-                        categoryContent +
-                        '<ul class="todo-list"></ul></label></div></li>';
+                        '<div><span className="category-list">' + categoryContent + '</span>'
+                        + '<div className="add-control">'
+                        + '<div className="form-group has-feedback todo">'
+                        + '<input type="text" id="todo-content" className="form-control" placeholder="✍️ Add item..."/>'
+                        + '<i className="fa fa-plus form-control-feedback add-todo" title="Add item"></i>'
+                        + '</div></div>'
+                        + '<ul><li className="animated flipInX"><div className="checkbox"></div></li></ul></div>';
 
-                    $(".category-list").append(item);
+                    $(".contents").append(item);
                 },
                 error: function (request, status, error) {
                     let msg = "ERROR : " + request.status + "<br>";
@@ -152,7 +158,7 @@
                 }
             });
         }
-    }
+    });
 
     $(".add-todo").on("click", function() {
         let todoContent = $("#todo-content").val();
