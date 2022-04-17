@@ -46,7 +46,7 @@ public class MemberController {
 
     // @AuthenticationPrincipal User userInfo : 파라미터로 사용하여 멤버 정보 바로 가져오기 (세션을 통하지 않아도 됨)
 
-    @PostMapping("/member/login")
+    @PostMapping("/member/loginProc")
     public String login(@ModelAttribute MemberForm memberForm, Model model){
         Member member = memberService.findOne(memberForm);
 

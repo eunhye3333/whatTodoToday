@@ -12,6 +12,15 @@
     <link rel='stylesheet prefetch' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css'>
     <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" integrity="sha256-6XMVI0zB8cRzfZjqKcD01PBsAy3FlDASrlC8SxCpInY=" crossorigin="anonymous"></script>
+    <style>
+        .category-list {
+            background-color: #827ffe;
+            color: whitesmoke;
+            margin: 15px 0px 5px;
+            padding: 5px 15px;
+            border-radius: 10px;
+        }
+    </style>
 </head>
 <body class="body">
 <div class="logo">
@@ -99,7 +108,7 @@
                     <span class="category-list" th:text="${category.categoryTitle}"></span>
                     <div class="add-control">
                         <div class="form-group has-feedback todo">
-                            <input type="text" id="todo-content" class="form-control" placeholder="✍️ Add item..."/>
+                            <input type="text" class="form-control todo-content" placeholder="✍️ Add item..."/>
                             <i class="fa fa-plus form-control-feedback add-todo" title="Add item"></i>
                         </div>
                     </div>
@@ -141,15 +150,16 @@
                 data: "categoryContent=" + categoryContent,
                 success: function (data) {
                     let item =
-                        '<div><span className="category-list">' + categoryContent + '</span>'
-                        + '<div className="add-control">'
-                        + '<div className="form-group has-feedback todo">'
-                        + '<input type="text" id="todo-content" className="form-control" placeholder="✍️ Add item..."/>'
-                        + '<i className="fa fa-plus form-control-feedback add-todo" title="Add item"></i>'
+                        '<div><span class="category-list"> 🗃️' + categoryContent + '</span>'
+                        + '<div class="add-control">'
+                        + '<div class="form-group has-feedback todo">'
+                        + '<input type="text" class="form-control todo-content" placeholder="✍️ Add item..."/>'
+                        + '<i class="fa fa-plus form-control-feedback add-todo" title="Add item"></i>'
                         + '</div></div>'
-                        + '<ul><li className="animated flipInX"><div className="checkbox"></div></li></ul></div>';
+                        + '<ul class="todo-list"></ul></div>';
 
                     $(".contents").append(item);
+                    $("#category-content").val("");
                 },
                 error: function (request, status, error) {
                     let msg = "ERROR : " + request.status + "<br>";
@@ -160,7 +170,7 @@
         }
     });
 
-    $(".add-todo").on("click", function() {
+    $(document).on('click', '.add-todo', function (e) {
         let todoContent = $("#todo-content").val();
 
         if (todoContent === "") {
@@ -183,6 +193,8 @@
                         "</label></div></li>";
 
                     $(".todo-list").append(item);
+                    $("#todo-content").val("");
+                    console.log(e.target);
                 },
                 error: function (request, status, error){
                     let msg = "ERROR : " + request.status + "<br>";
