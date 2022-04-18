@@ -13,9 +13,9 @@ public class MemberRepository {
 
     private final EntityManager em;
 
-    public Member findByUsername(String insertId) {
-        return em.find(Member.class, insertId);
-    }
+//    public Member findById(String insertId) {
+//        return em.find(Member.class, insertId);
+//    }
 
     public void save(Member member) {
         em.persist(member);

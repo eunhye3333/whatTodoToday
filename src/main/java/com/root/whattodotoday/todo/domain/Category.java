@@ -19,11 +19,11 @@ public class Category {
 
     private String categoryTitle;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "category")
     private List<Todo> todos = new ArrayList<>();
 
     @ManyToOne(targetEntity = Member.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_no")
+    @JoinColumn(name = "member_id")
     private Member member;
 
     public void initCategory(String categoryTitle){

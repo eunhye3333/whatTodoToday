@@ -31,7 +31,7 @@ public class Member {
     private String id;
     private String pw;
     private String nickname;
-    private String email;
+    private String auth;
 
     @Column(length = 1, columnDefinition = "varchar(1) default 'Y'")
     @Enumerated(EnumType.STRING)
@@ -40,11 +40,11 @@ public class Member {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Category> categories = new ArrayList<>();
 
-    public void initMember(String id, String pw, String nickname, String email){
+    public void initMember(String id, String pw, String nickname, String auth){
         this.id = id;
         this.pw = pw;
         this.nickname = nickname;
-        this.email = email;
+        this.auth = auth;
     }
 
 }

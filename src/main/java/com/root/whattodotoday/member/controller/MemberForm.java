@@ -15,5 +15,4 @@ public class MemberForm {
     private String pw;
 
     private String nickname;
-    private String email;
 }

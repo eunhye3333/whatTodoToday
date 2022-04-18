@@ -32,10 +32,8 @@ public class MemberController {
             return "member/createMemberForm";
         }
 
-        Member member = new Member();
-        member.initMember(form.getId(), form.getPw(), form.getNickname(), form.getEmail());
+        String memberId = memberService.join(form);
 
-        memberService.join(member);
         return "redirect:/member/login";
     }
 
@@ -45,18 +43,6 @@ public class MemberController {
     }
 
     // @AuthenticationPrincipal User userInfo : 파라미터로 사용하여 멤버 정보 바로 가져오기 (세션을 통하지 않아도 됨)
-
-    @PostMapping("/member/loginProc")
-    public String login(@ModelAttribute MemberForm memberForm, Model model){
-        Member member = memberService.findOne(memberForm);
-
-        if(member != null) {
-            model.addAttribute("member", member);
-            return "redirect:/todo/list";
-        } else {
-            return "redirect:/";
-        }
-    }
 
     @GetMapping("/logout")
     public String logout(SessionStatus status) {

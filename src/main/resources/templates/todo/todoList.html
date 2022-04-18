@@ -148,7 +148,7 @@
                 url: "/category/new",
                 type: "POST",
                 data: "categoryContent=" + categoryContent,
-                success: function (data) {
+                success: function (categoryNo) {
                     let item =
                         '<div><span class="category-list"> 🗃️' + categoryContent + '</span>'
                         + '<div class="add-control">'
@@ -170,8 +170,9 @@
         }
     });
 
-    $(document).on('click', '.add-todo', function (e) {
-        let todoContent = $("#todo-content").val();
+    $(document).on('click', '.add-todo', function () {
+        let todo = $(this).prev();
+        let todoContent = todo.val();
 
         if (todoContent === "") {
             $(".err")
@@ -186,15 +187,14 @@
                 url: "/todo/new",
                 type: "POST",
                 data: "todoContent=" + todoContent,
-                success: function (data){
+                success: function (todoNo){
                     let item =
                         '<li class="animated flipInX"><div class="checkbox"><span class="close"><i class="fa fa-times"></i></span><label><span class="checkbox-mask"></span><input type="checkbox" />' +
                         todoContent +
                         "</label></div></li>";
 
                     $(".todo-list").append(item);
-                    $("#todo-content").val("");
-                    console.log(e.target);
+                    todo.val("");
                 },
                 error: function (request, status, error){
                     let msg = "ERROR : " + request.status + "<br>";
@@ -207,19 +207,31 @@
         $(".form-control").focus();
     });
 
-    $(".todo-list").on("click", 'input[type="checkbox"]', function() {
+    $(document).on('click', 'input[type="checkbox"]', function () {
         let li = $(this).parents('li');
         li.toggleClass("danger");
         li.toggleClass("animated flipInX");
 
-        setToDone(li.data().id);
-
         setTimeout(function() {
             li.removeClass("animated flipInX");
         }, 500);
+
+        $.ajax({
+            url: "/todo/done",
+            type: "POST",
+            data: ,
+            success: function (data){
+
+            },
+            error: function (request, status, error){
+                let msg = "ERROR : " + request.status + "<br>";
+                msg += "내용 : " + request.responseText + "<br>" + error;
+                console.log(msg);
+            }
+        });
     });
 
-    $(".todo-list").on("click", ".close", function() {
+    $(document).on('click', '.close', function () {
         let box = $(this)
             .parent()
             .parent();
@@ -238,8 +250,9 @@
             }, 500);
         }
 
-        deleteTodo(box.data().id)
+        deleteTodo(box.data().id);
     });
+
 </script>
 </body>
 </html>

@@ -1,5 +1,7 @@
 package com.root.whattodotoday.security;
 
+import com.root.whattodotoday.member.service.MemberService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Configuration;
@@ -8,35 +10,53 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity // SpringSecurityFilterChain 포함시키기
+@RequiredArgsConstructor
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    LoginIdPwValidator loginIdPwValidator;
+    private final MemberService memberService;
 
+//    @Override
+//    protected void configure(HttpSecurity http) throws Exception {
+//        http.authorizeRequests()
+//                .antMatchers("/member/new").permitAll()    // 로그인 없이 접근 가능해야 하는 URI
+//                .antMatchers("/", "/todolist/**").hasRole("USER")
+////                .antMatchers("/manage").hasAuthority("ROLE_ADMIN") // 해당 사용자의 권한이 admin인 경우 /manage 이하의 uri에 접근 가능
+//                .anyRequest().authenticated() // 어떤 URI로 접근하든 인증된 사용자만 접근 가능
+//                // anyRequest() 대신 .antMatchers("url")을 사용하면 로그인이 필요한 uri 지정 가능
+//            .and()
+//                .formLogin() // 폼 방식 로그인을 사용하겠다
+//                .loginPage("/member/login") // 커스텀 페이지로 로그인 페이지를 변경
+//                .loginProcessingUrl("/member/loginProc") // form 태그의 action 주소 (로그인을 시도하면 넘겨받을 주소 지정 -> 자동으로 스프링 시큐리티쪽으로 id와 pw를 보냄)
+//                .usernameParameter("id") // 유저 아이디에 해당하는 form 내부 input의 name (생략 가능)
+//                .passwordParameter("pw") // 유저 비밀번호에 해당하는 form 내부 input의 name (생략 가능)
+//                .defaultSuccessUrl("/todo/list", true) // 로그인 성공 시 이동할 url 작성
+//                .permitAll()
+//            .and()
+//                .logout()
+//                .logoutRequestMatcher(new AntPathRequestMatcher("/logoutProc")); // /logoutProc를 호출하면 로그아웃이 되고 다시 로그인 페이지로 자동 이동 (생략 가능, 생략 시 /logout을 호출하면 로그아웃 가능
+//    }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/member/login").permitAll()    // 로그인 없이 접근 가능해야 하는 URI
-                .antMatchers("/member/new").permitAll()
-                .antMatchers("/todo/list").permitAll()
-//                .antMatchers("/manage").hasAuthority("ROLE_ADMIN") // 해당 사용자의 권한이 admin인 경우 /manage 이하의 uri에 접근 가능
-                .anyRequest().authenticated() // 어떤 URI로 접근하든 인증된 사용자만 접근 가능
-                // anyRequest() 대신 .antMatchers("url")을 사용하면 로그인이 필요한 uri 지정 가능
-            .and()
-                .formLogin() // 폼 방식 로그인을 사용하겠다
-                .loginPage("/member/login") // 커스텀 페이지로 로그인 페이지를 변경
-                .loginProcessingUrl("/member/loginProc") // form 태그의 action 주소 (로그인을 시도하면 넘겨받을 주소 지정 -> 자동으로 스프링 시큐리티쪽으로 id와 pw를 보냄)
-                .usernameParameter("id") // 유저 아이디에 해당하는 form 내부 input의 name (생략 가능)
-                .passwordParameter("pw") // 유저 비밀번호에 해당하는 form 내부 input의 name (생략 가능)
-                .defaultSuccessUrl("/todo/list", true) // 로그인 성공 시 이동할 url 작성
-                .permitAll()
-            .and()
-                .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logoutProc")); // /logoutProc를 호출하면 로그아웃이 되고 다시 로그인 페이지로 자동 이동 (생략 가능, 생략 시 /logout을 호출하면 로그아웃 가능
+                    .antMatchers("/member/login", "/members/new").permitAll()
+                    .antMatchers("/", "/todo/**").hasRole("USER")
+                .and()
+                    .formLogin()
+                    .loginPage("/member/login")
+                    .loginProcessingUrl("/loginProc")
+                    .defaultSuccessUrl("/todo/list")
+                    .usernameParameter("id")
+                .and()
+                    .logout()
+                    .logoutSuccessUrl("/member/login")
+                    .invalidateHttpSession(true)
+                .and()
+                    .csrf().disable();
     }
 
     @Override
@@ -47,6 +67,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(loginIdPwValidator); // 비밀번호 비교
+        auth.userDetailsService(memberService)
+                .passwordEncoder(new BCryptPasswordEncoder()); // 비밀번호 비교
     }
 }
