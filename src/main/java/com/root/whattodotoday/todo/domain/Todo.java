@@ -1,6 +1,7 @@
 package com.root.whattodotoday.todo.domain;
 
 import com.root.whattodotoday.member.domain.Member;
+import com.root.whattodotoday.todo.service.TodoService;
 import lombok.Getter;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -17,7 +18,10 @@ public class Todo {
     @Column(name = "todo_no")
     private Long todoNo;
 
+    @Column(insertable = true, updatable = false)
     private String todoContent;
+
+    @Column(insertable = true, updatable = false)
     private LocalDateTime todoDate;
 
     @Enumerated(EnumType.STRING)
@@ -34,8 +38,9 @@ public class Todo {
         this.category = category;
     }
 
-    public void updateTodo(Long todoNo){
+    public void updateTodo(Long todoNo, Category category, TodoStatus status){
         this.todoNo = todoNo;
-        this.status = TodoStatus.DONE;
+        this.category = category;
+        this.status = status;
     }
 }

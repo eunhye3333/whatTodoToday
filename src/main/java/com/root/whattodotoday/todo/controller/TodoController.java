@@ -4,6 +4,7 @@ import com.root.whattodotoday.member.domain.Member;
 import com.root.whattodotoday.member.domain.MemberDetail;
 import com.root.whattodotoday.todo.domain.Category;
 import com.root.whattodotoday.todo.domain.Todo;
+import com.root.whattodotoday.todo.domain.TodoStatus;
 import com.root.whattodotoday.todo.service.TodoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -66,14 +67,25 @@ public class TodoController {
 
     @PostMapping("/todo/done")
     @ResponseBody
-    public String updateTodo(@RequestParam("todoNo") String no){
+    public String updateTodo(@RequestParam("todoNo") String no, @RequestParam("categoryNo") String cNo, @RequestParam("status") String status){
         Long todoNo = Long.parseLong(no);
+        Long categoryNo = Long.parseLong(cNo);
+
+        Category category = new Category();
+        category.updateTodo(categoryNo);
+
+        TodoStatus todoStatus;
+        if(status.equals("YET")){
+            todoStatus = TodoStatus.DONE;
+        } else {
+            todoStatus = TodoStatus.YET;
+        }
 
         Todo todo = new Todo();
-        todo.updateTodo(todoNo);
+        todo.updateTodo(todoNo, category, todoStatus);
 
-        todoService.saveTodo(todo);
-        return "redirect:/todo/todoList";
+        Long todoN = todoService.saveTodo(todo);
+        return todoN.toString();
     }
 
 }

@@ -105,24 +105,41 @@
             <p class="no-items text-muted text-center hidden"><i class="fa fa-ban"></i></p>
             <div class="contents">
                 <div th:each="category : ${categories}">
-                    <span class="category-list" th:text="${category.categoryTitle}"></span>
+                    <span class="category-list" th:text="' 🗃️' + ${category.categoryTitle}"></span>
                     <div class="add-control">
                         <div class="form-group has-feedback todo">
                             <input type="text" class="form-control todo-content" placeholder="✍️ Add item..."/>
                             <i class="fa fa-plus form-control-feedback add-todo" title="Add item"></i>
+                            <input type="hidden" name="categoryNo" th:value="${category.categoryNo}">
                         </div>
                     </div>
-                    <ul th:each="todo : ${category.todos}">
-                        <li class="animated flipInX">
+                    <ul class="todo-list" th:each="todo : ${category.todos}">
+                        <li class="animated flipInX" th:if="${todo.getStatus().toString().equals('YET')}">
+                            <input type="hidden" th:value="${todo.status}">
                             <div class="checkbox">
                                 <span class="close">
                                     <i class="fa fa-times"></i>
                                 </span>
-                                <label th:text="${todo.todoContent}">
+                                <label>
                                     <span class="checkbox-mask"></span>
                                     <input type="checkbox" />
+                                    [[${todo.todoContent}]]
                                 </label>
-                                <input type="hidden" th:value="${todo.todoNo}">
+                                <input type="hidden" name="todoNo" th:value="${todo.todoNo}">
+                            </div>
+                        </li>
+                        <li class="animated flipInX danger" th:if="${todo.getStatus().toString().equals('DONE')}">
+                            <input type="hidden" th:value="${todo.status}">
+                            <div class="checkbox">
+                                <span class="close">
+                                    <i class="fa fa-times"></i>
+                                </span>
+                                <label>
+                                    <span class="checkbox-mask"></span>
+                                    <input type="checkbox" />
+                                    [[${todo.todoContent}]]
+                                </label>
+                                <input type="hidden" name="todoNo" th:value="${todo.todoNo}">
                             </div>
                         </li>
                     </ul>
@@ -176,6 +193,7 @@
         let todo = $(this).prev();
         let todoContent = todo.val();
         let categoryNo = $(this).next().val();
+        let todoList = $(this).parents('.add-control').next();
 
         if (todoContent === "") {
             $(".err")
@@ -186,20 +204,25 @@
             $(".err").addClass("hidden");
             $(".no-items").addClass("hidden");
 
+            console.log(todoContent);
+
             $.ajax({
                 url: "/todo/new",
                 type: "POST",
-                data: {"todoContent":todoContent, "categoryNo":categoryNo},
+                data: {"todoContent":todoContent,"categoryNo":categoryNo},
                 success: function (todoNo){
                     let item =
-                        '<li class="animated flipInX"><div class="checkbox"><span class="close"><i class="fa fa-times"></i></span><label><span class="checkbox-mask"></span>' +
+                        '<li class="animated flipInX">'
+                        + '<input type="hidden" value="YET">'
+                        + '<div class="checkbox"><span class="close"><i class="fa fa-times"></i></span>'
+                        + '<label><span class="checkbox-mask"></span>'
                         + '<input type="checkbox" />'
                         + todoContent
                         + "</label>"
                         + '<input type="hidden" name="todoNo" value="' + todoNo + '">'
                         + "</div></li>";
 
-                    $(".todo-list").append(item);
+                    todoList.append(item);
                     todo.val("");
                 },
                 error: function (request, status, error){
@@ -215,19 +238,24 @@
 
     $(document).on('click', 'input[type="checkbox"]', function () {
         let li = $(this).parents('li');
+        let statusInput = $(this).parents('.checkbox').prev();
+        let status = statusInput.val();
         let todoNo = $(this).parent().next().val();
+        let categoryNo = $(this).parents('.todo-list').prev().find('input[type="hidden"]').val();
 
         $.ajax({
             url: "/todo/done",
             type: "POST",
-            data: {"todoNo":todoNo},
-            success: function (todoState){
+            data: {"todoNo":todoNo, "categoryNo":categoryNo, "status":status},
+            success: function (todoNo){
                 li.toggleClass("danger");
                 li.toggleClass("animated flipInX");
 
-                setTimeout(function() {
-                    li.removeClass("animated flipInX");
-                }, 500);
+                if(status == 'YET'){
+                    statusInput.val('DONE');
+                } else if(status == 'DONE') {
+                    statusInput.val('YET');
+                }
             },
             error: function (request, status, error){
                 let msg = "ERROR : " + request.status + "<br>";

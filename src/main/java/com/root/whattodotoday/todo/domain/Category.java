@@ -38,4 +38,8 @@ public class Category {
         this.member = member;
     }
 
+    public void updateTodo(Long categoryNo){
+        this.categoryNo = categoryNo;
+    }
+
 }
