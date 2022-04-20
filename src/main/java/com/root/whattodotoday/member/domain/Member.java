@@ -3,6 +3,7 @@ package com.root.whattodotoday.member.domain;
 import com.root.whattodotoday.todo.domain.Category;
 import com.root.whattodotoday.todo.domain.Todo;
 import lombok.Getter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -17,6 +18,7 @@ import java.util.List;
 //        initialValue=1, //시작값
 //        allocationSize=1 //메모리를 통해 할당할 범위 사이즈
 //)
+@DynamicUpdate
 public class Member {
 
     @Id
@@ -47,4 +49,7 @@ public class Member {
         this.auth = auth;
     }
 
+    public void setNo(Long memberNo){
+        this.memberNo = memberNo;
+    }
 }

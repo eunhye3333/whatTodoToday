@@ -37,9 +37,9 @@ public class MemberService implements UserDetailsService {
     }
 
     private void validateDuplicateMember(MemberForm form) {
-        Member findMember = memberRepository.findById(form.getId()).get(0);
+        List<Member> findMember = memberRepository.findById(form.getId());
 
-        if(findMember != null){
+        if(findMember != null && !findMember.isEmpty()){
             throw new IllegalStateException("이미 존재하는 회원입니다.");
         }
     }

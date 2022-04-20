@@ -113,15 +113,16 @@
                         </div>
                     </div>
                     <ul th:each="todo : ${category.todos}">
-                        <li class="animated flipInX" th:text="${todo.todoContent}">
+                        <li class="animated flipInX">
                             <div class="checkbox">
                                 <span class="close">
                                     <i class="fa fa-times"></i>
                                 </span>
-                                <label>
+                                <label th:text="${todo.todoContent}">
                                     <span class="checkbox-mask"></span>
                                     <input type="checkbox" />
                                 </label>
+                                <input type="hidden" th:value="${todo.todoNo}">
                             </div>
                         </li>
                     </ul>
@@ -147,7 +148,7 @@
             $.ajax({
                 url: "/category/new",
                 type: "POST",
-                data: "categoryContent=" + categoryContent,
+                data: {"categoryContent":categoryContent},
                 success: function (categoryNo) {
                     let item =
                         '<div><span class="category-list"> 🗃️' + categoryContent + '</span>'
@@ -155,6 +156,7 @@
                         + '<div class="form-group has-feedback todo">'
                         + '<input type="text" class="form-control todo-content" placeholder="✍️ Add item..."/>'
                         + '<i class="fa fa-plus form-control-feedback add-todo" title="Add item"></i>'
+                        + '<input type="hidden" name="categoryNo" value="' + categoryNo + '">'
                         + '</div></div>'
                         + '<ul class="todo-list"></ul></div>';
 
@@ -173,6 +175,7 @@
     $(document).on('click', '.add-todo', function () {
         let todo = $(this).prev();
         let todoContent = todo.val();
+        let categoryNo = $(this).next().val();
 
         if (todoContent === "") {
             $(".err")
@@ -186,12 +189,15 @@
             $.ajax({
                 url: "/todo/new",
                 type: "POST",
-                data: "todoContent=" + todoContent,
+                data: {"todoContent":todoContent, "categoryNo":categoryNo},
                 success: function (todoNo){
                     let item =
-                        '<li class="animated flipInX"><div class="checkbox"><span class="close"><i class="fa fa-times"></i></span><label><span class="checkbox-mask"></span><input type="checkbox" />' +
-                        todoContent +
-                        "</label></div></li>";
+                        '<li class="animated flipInX"><div class="checkbox"><span class="close"><i class="fa fa-times"></i></span><label><span class="checkbox-mask"></span>' +
+                        + '<input type="checkbox" />'
+                        + todoContent
+                        + "</label>"
+                        + '<input type="hidden" name="todoNo" value="' + todoNo + '">'
+                        + "</div></li>";
 
                     $(".todo-list").append(item);
                     todo.val("");
@@ -209,19 +215,19 @@
 
     $(document).on('click', 'input[type="checkbox"]', function () {
         let li = $(this).parents('li');
-        li.toggleClass("danger");
-        li.toggleClass("animated flipInX");
-
-        setTimeout(function() {
-            li.removeClass("animated flipInX");
-        }, 500);
+        let todoNo = $(this).parent().next().val();
 
         $.ajax({
             url: "/todo/done",
             type: "POST",
-            data: ,
-            success: function (data){
+            data: {"todoNo":todoNo},
+            success: function (todoState){
+                li.toggleClass("danger");
+                li.toggleClass("animated flipInX");
 
+                setTimeout(function() {
+                    li.removeClass("animated flipInX");
+                }, 500);
             },
             error: function (request, status, error){
                 let msg = "ERROR : " + request.status + "<br>";

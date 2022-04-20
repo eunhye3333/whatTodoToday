@@ -1,10 +1,12 @@
 package com.root.whattodotoday.todo.controller;
 
 import com.root.whattodotoday.member.domain.Member;
+import com.root.whattodotoday.member.domain.MemberDetail;
 import com.root.whattodotoday.todo.domain.Category;
 import com.root.whattodotoday.todo.domain.Todo;
 import com.root.whattodotoday.todo.service.TodoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
@@ -31,11 +32,14 @@ public class TodoController {
 
     @PostMapping("/category/new")
     @ResponseBody
-    public String createCategory(@RequestParam("categoryContent") String categoryContent, HttpSession session){
+    public String createCategory(@RequestParam("categoryContent") String categoryContent,
+                                 Authentication authentication){
         Category category = new Category();
-        category.initCategory(categoryContent);
+        MemberDetail md = (MemberDetail) authentication.getPrincipal();
+        Member member = new Member();
+        member.setNo(md.getMemberNo());
 
-        Member member = (Member)session.getAttribute("member");
+        category.initCategory(categoryContent, member);
 
         Long categoryNo = todoService.saveCategory(category);
         return categoryNo.toString();
@@ -43,23 +47,30 @@ public class TodoController {
 
     @PostMapping("/todo/new")
     @ResponseBody
-    public String createTodo(@RequestParam("todoContent") String todoContent, HttpSession session){
-        Todo todo = new Todo();
-        Member member = (Member)session.getAttribute("member");
+    public String createTodo(@RequestParam("todoContent") String todoContent, @RequestParam("categoryNo") String no, Authentication authentication){
+        Long categoryNo = Long.parseLong(no);
 
-        todo.initTodo(todoContent);
+        MemberDetail md = (MemberDetail) authentication.getPrincipal();
+        Member member = new Member();
+        member.setNo(md.getMemberNo());
+
+        Category category = new Category();
+        category.newTodo(categoryNo, member);
+
+        Todo todo = new Todo();
+        todo.initTodo(todoContent, category);
 
         Long todoNo = todoService.saveTodo(todo);
         return todoNo.toString();
     }
 
-    @PostMapping("/todo/update")
+    @PostMapping("/todo/done")
     @ResponseBody
-    public String updateTodo(@RequestParam("todoContent") String todoContent, HttpSession session){
-        Todo todo = new Todo();
-        Member member = (Member)session.getAttribute("member");
+    public String updateTodo(@RequestParam("todoNo") String no){
+        Long todoNo = Long.parseLong(no);
 
-        todo.initTodo(todoContent);
+        Todo todo = new Todo();
+        todo.updateTodo(todoNo);
 
         todoService.saveTodo(todo);
         return "redirect:/todo/todoList";

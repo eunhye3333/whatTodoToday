@@ -1,6 +1,8 @@
 package com.root.whattodotoday.member.domain;
 
 import com.root.whattodotoday.member.domain.Member;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,16 +10,19 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
+@Setter @Getter
 public class MemberDetail implements UserDetails {
 
-    private String id;
-    private String pw;
+    private Long memberNo;
+    private String username;
+    private String password;
     private String nickname;
     private String auth;
 
     public MemberDetail(Member member) {
-        this.id = member.getId();
-        this.pw = member.getPw();
+        this.memberNo = member.getMemberNo();
+        this.username = member.getId();
+        this.password = member.getPw();
         this.nickname = member.getNickname();
         this.auth = "ROLE_" + member.getAuth();
     }
@@ -29,12 +34,12 @@ public class MemberDetail implements UserDetails {
 
     @Override
     public String getPassword() {
-        return this.pw;
+        return this.password;
     }
 
     @Override
     public String getUsername() {
-        return this.id;
+        return this.username;
     }
 
     @Override

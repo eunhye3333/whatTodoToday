@@ -51,6 +51,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                     .loginProcessingUrl("/loginProc")
                     .defaultSuccessUrl("/todo/list")
                     .usernameParameter("id")
+                    .passwordParameter("pw")
                 .and()
                     .logout()
                     .logoutSuccessUrl("/member/login")

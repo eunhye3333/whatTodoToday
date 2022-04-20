@@ -2,12 +2,14 @@ package com.root.whattodotoday.todo.domain;
 
 import com.root.whattodotoday.member.domain.Member;
 import lombok.Getter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@DynamicUpdate
 public class Todo {
 
     @Id
@@ -25,9 +27,15 @@ public class Todo {
     @JoinColumn(name = "category_no")
     private Category category;
 
-    public void initTodo(String todoContent){
+    public void initTodo(String todoContent, Category category){
         this.todoContent = todoContent;
         this.todoDate = LocalDateTime.now();
         this.status = TodoStatus.YET;
+        this.category = category;
+    }
+
+    public void updateTodo(Long todoNo){
+        this.todoNo = todoNo;
+        this.status = TodoStatus.DONE;
     }
 }
