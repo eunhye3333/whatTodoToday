@@ -18,6 +18,11 @@ import java.util.List;
 public class MemberController {
     private final MemberService memberService;
 
+    @GetMapping("/")
+    public String home(){
+        return "member/login";
+    }
+
     // 회원가입 창으로 전환
     @GetMapping("/member/new")
     public String signup(Model model){
