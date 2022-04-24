@@ -15,6 +15,9 @@
 	<link rel="stylesheet" type="text/css" href="/vendor/daterangepicker/daterangepicker.css">
 	<link rel="stylesheet" type="text/css" href="/css/util.css">
 	<link rel="stylesheet" type="text/css" href="/css/main.css">
+
+	<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" integrity="sha256-6XMVI0zB8cRzfZjqKcD01PBsAy3FlDASrlC8SxCpInY=" crossorigin="anonymous"></script>
 </head>
 <body>
 <form action="/loginProc" method="post">
@@ -28,7 +31,7 @@
 
 					
 					<div class="wrap-input100 validate-input m-b-16" data-validate = "아이디는 필수 입력 조건입니다.">
-						<input class="input100" type="text" name="id" placeholder="Id">
+						<input class="input100" type="text" id="userId" name="id" placeholder="Id">
 						<span class="focus-input100"></span>
 					</div>
 					
@@ -54,7 +57,7 @@
 					</div>
 
 					<div class="container-login100-form-btn m-t-17">
-						<button class="login100-form-btn" type="submit">
+						<button class="login100-form-btn" type="button" onclick="login();">
 							Login
 						</button>
 					</div>
@@ -64,6 +67,50 @@
 		</div>
 	</div>
 </form>
+<script>
+	function login() {
+		let remember = $('#ckb1').is(':checked');
+		let userId = $('#userId').val();
+
+		if(remember){
+			setCookie('rememberId', userId, 7);
+		}
+
+		$('form').submit();
+	}
+
+	$(document).ready(function () {
+		let rememberId = getCookie('rememberId');
+		console.log(rememberId);
+		if(rememberId){
+			$('#userId').val(rememberId);
+			$('#ckb1').prop('checked', true);
+		}
+	});
+
+	function setCookie(cookie_name, value, days) {
+		let exdate = new Date();
+		exdate.setDate(exdate.getDate() + days);
+
+		let cookie_value = escape(value) + ((days == null) ? '' : '; expires=' + exdate.toUTCString());
+		document.cookie = cookie_name + '=' + cookie_value;
+	}
+
+	function getCookie(cookie_name) {
+		let x, y;
+		let val = document.cookie.split(';');
+
+		for (let i = 0; i < val.length; i++) {
+			x = val[i].substr(0, val[i].indexOf('='));
+			y = val[i].substr(val[i].indexOf('=') + 1);
+			x = x.replace(/^\s+|\s+$/g, ''); // 앞과 뒤의 공백 제거하기
+			if (x == cookie_name) {
+				return unescape(y); // unescape로 디코딩 후 값 리턴
+			}
+		}
+	}
+	
+</script>
 
 <script src="/vendor/jquery/jquery-3.2.1.min.js"></script>
 <script src="/vendor/animsition/js/animsition.min.js"></script>

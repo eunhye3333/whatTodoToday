@@ -52,7 +52,7 @@ public class MemberController {
     @GetMapping("/logout")
     public String logout(SessionStatus status) {
         status.setComplete();
-        return "redirect:index.html";
+        return "redirect:/member/login";
     }
 
 
