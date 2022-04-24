@@ -45,4 +45,9 @@ public class TodoRepository {
     }
 
 
+    public List<Category> findCategoryList(Long memberNo) {
+        String jpql = "select c from Category c where c.member = " + memberNo;
+        return em.createQuery(jpql, Category.class)
+                .getResultList();
+    }
 }

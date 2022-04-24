@@ -24,8 +24,10 @@ public class TodoController {
     private final TodoService todoService;
 
     @GetMapping("/todo/list")
-    public String todoListView(Model model){
-        List<Category> categories = todoService.findCategory();
+    public String todoListView(Model model, Authentication authentication){
+        MemberDetail md = (MemberDetail) authentication.getPrincipal();
+
+        List<Category> categories = todoService.findCategoryList(md.getMemberNo());
         model.addAttribute("categories", categories);
 
         return "/todo/todoList";
@@ -33,8 +35,7 @@ public class TodoController {
 
     @PostMapping("/category/new")
     @ResponseBody
-    public String createCategory(@RequestParam("categoryContent") String categoryContent,
-                                 Authentication authentication){
+    public String createCategory(@RequestParam("categoryContent") String categoryContent, Authentication authentication){
         Category category = new Category();
         MemberDetail md = (MemberDetail) authentication.getPrincipal();
         Member member = new Member();

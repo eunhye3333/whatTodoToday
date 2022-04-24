@@ -35,4 +35,7 @@ public class TodoService {
     }
 
 
+    public List<Category> findCategoryList(Long memberNo) {
+        return todoRepository.findCategoryList(memberNo);
+    }
 }
